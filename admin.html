@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitZone Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
+  <!-- <style>
+    body {
+      font-family: Poppins, sans-serif;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #ff6b35;
+      color: white;
+    }
+    tr:hover {
+      background: #f1f1f1;
+    }
+    .search-box {
+      margin-bottom: 15px;
+      padding: 8px;
+      width: 250px;
+    }
+  </style>
+</head>
+<body> -->
+
+  <h1>Membership Data</h1>
+  <input type="text" class="search-box" placeholder="Search by name..." id="searchInput">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Plan</th>
+        <th>Message</th>
+        <th>Date Joined</th>
+      </tr>
+    </thead>
+    <tbody id="memberTable"></tbody>
+  </table>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxBCh6DPCRI6WzpUv5X62okz1GzP0zwTtwv4xNHslnBkwogOMaVPDC6AF9OEDc1oyKU/exec"; // same as in script.js
+
+    async function loadMembers() {
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_URL);
+        const members = await res.json();
+
+        const tableBody = document.getElementById('memberTable');
+        tableBody.innerHTML = "";
+
+        members.forEach(member => {
+          const row = `<tr>
+            <td>${member.name}</td>
+            <td>${member.email}</td>
+            <td>${member.phone}</td>
+            <td>${member.plan}</td>
+            <td>${member.message || ""}</td>
+            <td>${member.date}</td>
+          </tr>`;
+          tableBody.innerHTML += row;
+        });
+      } catch (error) {
+        alert("Error loading data: " + error.message);
+      }
+    }
+
+    // Search filter
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const filter = this.value.toLowerCase();
+      document.querySelectorAll("#memberTable tr").forEach(row => {
+        const name = row.cells[0].textContent.toLowerCase();
+        row.style.display = name.includes(filter) ? "" : "none";
+      });
+    });
+
+    loadMembers();
+  </script>
+</body>
+</html>
